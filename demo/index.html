@@ -1,0 +1,97 @@
+<!--
+   Demo html page for an example of hosting the 
+       video-tagging control.
+-->
+
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>Video Tagging</title>
+    <script src="../bower_components/webcomponentsjs/webcomponents.min.js"></script>
+    <link rel="import" href="../bower_components/video-tagging/video-tagging.html">
+  </head>
+  <body>
+    <div style="float:center;margin-right:400px">
+      <h1>Video-tagging Demo</h1>
+      <select id="jobslist" onChange="jobSelectionChanged()">
+            <option>Select tagging job:</option>
+            <option value="1">video-tagging using rectangle markers</option>
+            <option value="2">video-tagging using point markers</option>
+      </select>
+      <br>
+    </div>
+    <div >
+        <div style="width:65%;margin:100px 0 0 200px">
+            <video-tagging id='video-tagging'></video-tagging>
+        </div>
+    </div>
+    
+   <script>
+    var jobList = [];
+    var job1 = {};
+    job1.Config = {"regiontype":"Rectangle", "multiregions":"0"};
+    job1.Config.tags = ["shoe","stone","hat","shirt","white","brown"];
+    job1.DurationSeconds = 21.8;
+    job1.FramesPerSecond = 25;
+    job1.Height = 480;
+    job1.Width = 640;
+    job1.Description = "Job1";
+    job1.id = 1;
+    job1.video = "mov1.mp4";
+
+    var job2 = {};
+    job2.Config = {"regiontype":"Point", "regionsize":"25", "multiregions":"1"};
+    job2.Config.tags = ["shoe","stone","hat","shirt","white","brown"];
+    job2.DurationSeconds = 21.8;
+    job2.FramesPerSecond = 25;
+    job2.Height = 480;
+    job2.Width = 640;
+    job2.Description = "Job2";
+    job2.id = 2;
+    job2.video = "mov2.mp4";
+
+    jobList.push(job1)
+    jobList.push(job2)
+
+    function jobSelectionChanged(){
+
+        var sel = document.getElementById("jobslist");
+        if(sel.options[sel.selectedIndex].value == "Select Job..."){
+            return;
+        }
+        //Get job by id 
+        var jobId = sel.options[sel.selectedIndex].value;
+        var job;
+        jobId = parseInt(jobId);
+        jobList.forEach(function(item){
+            
+            if(item.id === jobId) {
+                job = item;
+            }
+        });
+        
+        var videotagging = document.getElementById('video-tagging');
+
+        videotagging.videoduration = job.DurationSeconds;
+        videotagging.videowidth = job.Width;
+        videotagging.videoheight = job.Height;
+        videotagging.framerate = job.FramesPerSecond;
+
+        var jobConfig = job.Config;
+        videotagging.regiontype = jobConfig.regiontype;
+        videotagging.multiregions = jobConfig.multiregions;
+        videotagging.regionsize = jobConfig.regionsize;
+        videotagging.inputtagsarray = jobConfig.tags;
+        
+        videotagging.src = job.video;//load
+    }
+    
+    document.getElementById('video-tagging').addEventListener('onregionchanged', function (e) {
+            
+            //Persist
+        });
+   </script>
+  </body>
+</html>
