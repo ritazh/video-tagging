@@ -299,25 +299,6 @@ $.imgAreaSelect = function (img, options) {
         return false;
     }
 
-    function fixAspectRatio(xFirst) {
-        if (aspectRatio)
-            if (xFirst) {
-                x2 = max(left, min(left + imgWidth,
-                    x1 + abs(y2 - y1) * aspectRatio * (x2 > x1 || -1)));
-
-                y2 = round(max(top, min(top + imgHeight,
-                    y1 + abs(x2 - x1) / aspectRatio * (y2 > y1 || -1))));
-                x2 = round(x2);
-            }
-            else {
-                y2 = max(top, min(top + imgHeight,
-                    y1 + abs(x2 - x1) / aspectRatio * (y2 > y1 || -1)));
-                x2 = round(max(left, min(left + imgWidth,
-                    x1 + abs(y2 - y1) * aspectRatio * (x2 > x1 || -1))));
-                y2 = round(y2);
-            }
-    }
-
     function doResize() {
         x1 = min(x1, left + imgWidth);
         y1 = min(y1, top + imgHeight);
@@ -342,18 +323,6 @@ $.imgAreaSelect = function (img, options) {
 
         x2 = max(left, min(x2, left + imgWidth));
         y2 = max(top, min(y2, top + imgHeight));
-
-        fixAspectRatio(abs(x2 - x1) < abs(y2 - y1) * aspectRatio);
-
-        if (abs(x2 - x1) > maxWidth) {
-            x2 = x1 - maxWidth * (x2 < x1 || -1);
-            fixAspectRatio();
-        }
-
-        if (abs(y2 - y1) > maxHeight) {
-            y2 = y1 - maxHeight * (y2 < y1 || -1);
-            fixAspectRatio(true);
-        }
 
         selection = { x1: selX(min(x1, x2)), x2: selX(max(x1, x2)),
             y1: selY(min(y1, y2)), y2: selY(max(y1, y2)),
@@ -495,7 +464,6 @@ $.imgAreaSelect = function (img, options) {
                 t = max(x1, x2);
                 x1 = min(x1, x2);
                 x2 = max(t + d, x1);
-                fixAspectRatio();
                 break;
             case 38:
                 d = -d;
@@ -503,7 +471,6 @@ $.imgAreaSelect = function (img, options) {
                 t = max(y1, y2);
                 y1 = min(y1, y2);
                 y2 = max(t + d, y1);
-                fixAspectRatio(true);
                 break;
             default:
                 return;
