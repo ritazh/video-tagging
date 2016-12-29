@@ -180,6 +180,30 @@
 
       }, false );
 
+     $(window).resize( function(){
+            //get transform ratio
+            var transformWidth =  self.video.offsetWidth/self.overlay.width;
+            var transformHeight = self.video.offsetHeight/self.overlay.height;
+
+            //resize the overlay            
+            self.overlay.width = self.video.offsetWidth;
+            self.overlay.height = self.video.offsetHeight;            
+
+            //resize the region boxes
+            $('.regionCanvas').each(function() {
+                this.style.left = (parseFloat(this.style.left) * transformWidth) + "px";
+                this.style.top = (parseFloat(this.style.top) * transformHeight) + "px";
+                this.style.width = (parseFloat(this.style.width) * transformWidth) + "px";
+                this.style.height = (parseFloat(this.style.height) * transformHeight) + "px";
+
+            });
+
+            //reposition selectedRegion Label
+            var selectedDiv = $('.regionCanvasSelected')[0];
+            self.positionRegionNameLabel(selectedDiv);
+
+      });
+
       this.video.onended = function(){
            
            self.pauseState();
@@ -250,7 +274,7 @@
             show:false,
             hide:true
       });
-      if(this.regiontype.toLowerCase() === "rectangle") {
+      if((this.regiontype.toLowerCase() === "square") || (this.regiontype.toLowerCase() === "rectangle")) {
           var areaSelected = false;
           
           $('canvas#overlay').imgAreaSelect({
@@ -261,6 +285,7 @@
                         maxHeight: self.overlay.offsetHeight,
                         minWidth:10,
                         fadeSpeed: 200,
+                        square: (this.regiontype.toLowerCase() === "square"),
                         
                         onSelectEnd: function(img, selection){
                       
@@ -302,7 +327,7 @@
     createRegion: function(x1, y1, x2, y2) {
 
         var region = this.addRegion(x1, y1, x2, y2);//Add to in-memory collection
-        this.drawRegion(x1, y1, x2, y2, region.name);//Draw
+        this.addDivToRegion(x1, y1, x2 , y2, region.name);//add frame
         this.regionSelected(region.name);//Select it by default
 
         if(this.lockTagsEnabled) {   
@@ -423,8 +448,9 @@
                   div.style.height = this.regionsize - 1 +  "px";
                   div.style.top = y1 - this.regionsize/2  +  "px";
                   div.style.left = x1 - this.regionsize/2  +  "px";
+                  div.classList.add("regionPoint");
             }
-            if(this.regiontype.toLowerCase() === "rectangle") {
+            if((this.regiontype.toLowerCase() === "square") || (this.regiontype.toLowerCase() === "rectangle")) {
                   div.style.width = x2 - x1  +  "px";
                   div.style.height = y2 - y1   +  "px";
                   div.style.top = y1  + "px";
@@ -493,7 +519,7 @@
                   y1 = (region.y1 * heightRatio);
                   x2 = (region.x2 * widthRatio);
                   y2 = (region.y2 * heightRatio);
-                  this.drawRegion( x1, y1, x2, y2, region.name);
+                  this.addDivToRegion( x1, y1, x2, y2, region.name);
                   //Only 1 region - select it and show tags
                   if(regions.length === 1) {
                       this.regionSelected(region.name)
@@ -535,43 +561,6 @@
             }
             return region; 
     },
-    /** 
-       * @method drawRegion
-       * Uses HTML5 canvas to draw.
-       * @params {x1, y1, x2, y2} regionname.
-       */
-    drawRegion: function(x1, y1, x2, y2, regionname) {
-
-            this.ctx.strokeStyle = 'rgb(0,0,0)';
-            this.ctx.lineWidth = 1;
-            if(this.regiontype.toLowerCase() === "point") {
-               
-               var centerOffset = this.regionsize/2;
-
-                this.ctx.beginPath();
-                    this.ctx.moveTo(x1 + centerOffset, y1 + centerOffset);
-                    this.ctx.lineTo(x1 - centerOffset, y1 - centerOffset);
-                    this.ctx.moveTo(x1 + centerOffset, y1 - centerOffset);
-                    this.ctx.lineTo(x1 - centerOffset, y1 + centerOffset);
-                    this.ctx.stroke();
-                    this.ctx.closePath();
-            }        
-            else if(this.regiontype.toLowerCase() === "rectangle") {
-                this.ctx.beginPath();
-                this.ctx.moveTo(x1, y1);
-                this.ctx.lineTo(x2 , y1);
-                this.ctx.moveTo(x2, y1);
-                this.ctx.lineTo(x2 , y2);
-                this.ctx.moveTo(x2, y2);
-                this.ctx.lineTo(x1 , y2);
-                this.ctx.moveTo(x1, y2);
-                this.ctx.lineTo(x1 , y1);
-                this.ctx.stroke();
-                this.ctx.closePath();
-            }
-            this.addDivToRegion(x1, y1, x2 , y2, regionname);
-    },
-
     
     /**
        * All functions related to frames management
@@ -581,8 +570,6 @@
        */
     clearFrameElements: function() {
 
-      //Clear drawings
-      this.ctx.clearRect(0, 0, this.overlay.width, this.overlay.height);
       //Clear divs
       $(this.videoWrapper).children(".regionCanvas").remove();
       //reset tag buttons to not selected
@@ -697,7 +684,8 @@
      },
     videoClicked: function(e) {
             this.cleanSelectedElements();
-            if(this.regiontype.toLowerCase() !== "rectangle") {
+            if(!((this.regiontype.toLowerCase() === "square") || (this.regiontype.toLowerCase() === "rectangle")))
+            {
                 var rect = this.overlay.getBoundingClientRect();
                 var x1 = (e.clientX-rect.left)/(rect.right-rect.left)*this.overlay.width;
                 var y1 = (e.clientY-rect.top)/(rect.bottom-rect.top)*this.overlay.height;
