@@ -17,8 +17,9 @@
       <h1>Video-tagging Demo</h1>
       <select id="jobslist" onChange="jobSelectionChanged()">
             <option>Select tagging job:</option>
-            <option value="1">video-tagging using rectangle markers</option>
+            <option value="1">video-tagging using square markers</option>
             <option value="2">video-tagging using point markers</option>
+            <option value="3">video-tagging using rectangle markers</option>
       </select>
       <br>
     </div>
@@ -31,7 +32,7 @@
    <script>
     var jobList = [];
     var job1 = {};
-    job1.Config = {"regiontype":"Rectangle", "multiregions":"0"};
+    job1.Config = {"regiontype":"Square", "multiregions":"0"};
     job1.Config.tags = ["shoe","stone","hat","shirt","white","brown"];
     job1.DurationSeconds = 21.8;
     job1.FramesPerSecond = 25;
@@ -52,8 +53,19 @@
     job2.id = 2;
     job2.video = "mov2.mp4";
 
+    var job3 = {};
+    job3.Config = {"regiontype":"Rectangle",  "multiregions":"1"};
+    job3.Config.tags = ["shoe","stone","hat","shirt","white","brown"];
+    job3.DurationSeconds = 21.8;
+    job3.FramesPerSecond = 25;
+    job3.Description = "Job2";
+    job3.id = 3;
+    job3.video = "mov2.mp4";
+
+
     jobList.push(job1)
     jobList.push(job2)
+    jobList.push(job3)
 
     function jobSelectionChanged(){
 

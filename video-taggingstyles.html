@@ -14,7 +14,6 @@
               box-sizing: border-box;
             }
 
-
         .controlWrapper{
             width:100%;
             height:100%;
@@ -43,9 +42,14 @@
           border:0px solid green;
         }
 
-        .videoStyle {
-          z-index: 2;
-          width: 100%;
+       .videoStyle {
+           z-index: 2;
+           width: 100%;
+           background: transparent;
+           background-size: contain; 
+           background-repeat: no-repeat;
+           background-position: 50% 50%;
+           box-sizing: border-box;                    
         }
 
         /*playback*/
@@ -90,15 +94,36 @@
             color:rgb(175,171,171);
         }
 
-        .regionCanvas{
-            
+        .regionCanvas{    
             z-index: 100;
             background-color: transparent;
-            position: absolute;
+            position: absolute !important;
+            border: 4px solid blue;
+            border-radius: 8px;
         }
 
+        .regionPoint{
+            border: none;
+            /*add an x from http://stackoverflow.com/questions/18012420/draw-diagonal-lines-in-div-background-with-css*/
+            background: 
+            linear-gradient(to top left,
+                rgba(0,0,0,0) 0%,
+                rgba(0,0,0,0) calc(50% - 0.8px),
+                rgba(0,0,0,1) 50%,
+                rgba(0,0,0,0) calc(50% + 0.8px),
+                rgba(0,0,0,0) 100%),
+            linear-gradient(to top right,
+                rgba(0,0,0,0) 0%,
+                rgba(0,0,0,0) calc(50% - 0.8px),
+                rgba(0,0,0,1) 50%,
+                rgba(0,0,0,0) calc(50% + 0.8px),
+                rgba(0,0,0,0) 100%);
+        }
+
+
         .regionCanvasSelected{
-            border: 1px solid #C00000;
+            border: 4px solid #C00000;
+            border-radius: 8px;
         }
 
 
@@ -218,11 +243,6 @@
 
         .tagOff{
             background:rgb(59,56,56);
-        }
-
-        .regionSelected{
-            border-width: 1px;
-            border-color: rgb(255, 0, 0);
         }
 
     </style> 
