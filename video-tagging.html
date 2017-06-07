@@ -178,7 +178,7 @@
             self.optionalTags.createTagControls(self.inputtagsarray);
             //Take the raw video aspect ratio
             self.aspect = self.video.offsetWidth / self.video.offsetHeight;
-            self.snapToAspectRatio();
+            // self.snapToAspectRatio();
             //Init sliders
             self.volumeSlider.value = 0.5;
             self.seekBar.max = self.video.duration;
@@ -189,7 +189,7 @@
             //fix resize bug
             $(window).resize( function(){
                 if (self.video.offsetWidth !== undefined){
-                    self.snapToAspectRatio();
+                    // self.snapToAspectRatio();
                     //get transform ratio
                     var transformWidth =  self.video.offsetWidth/self.overlay.width;
                     var transformHeight = self.video.offsetHeight/self.overlay.height;
