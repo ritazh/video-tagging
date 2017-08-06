@@ -89,12 +89,28 @@ A **_video-tagging job_** is an input video and a configuration object which def
 Here's an example of a job configuration:
 ```
 { "id": 5,
-  "video": "sample-video.mp4",
+  "src": "sample-video.mp4",
   "Description = "human tracking job",
   "regiontype":"Point", 
   "regionsize":"25", 
   "multiregions":"1", // allow multiple regions per frame
-  "tage" : ["text-1","text-2","text-3"],
+  "tags" : ["text-1","text-2","text-3"],
+  "DurationSeconds" = 21.8, 
+  "FramesPerSecond = 25,
+  "Height" = 480,
+  "Width" = 640
+}
+```
+A **_video-tagging job_** can also support image tagging with the following  configuration object which defines the tagging job.
+Here's an example of a job configuration:
+```
+{ "id": 5,
+  "imagelist": "['image_path1.jpg','image_path2.jpg', 'image_path3.jpg']",
+  "Description = "human tracking job",
+  "regiontype":"Point", 
+  "regionsize":"25", 
+  "multiregions":"1", // allow multiple regions per frame
+  "tags" : ["text-1","text-2","text-3"],
   "DurationSeconds" = 21.8, 
   "FramesPerSecond = 25,
   "Height" = 480,
