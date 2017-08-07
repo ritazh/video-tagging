@@ -20,6 +20,7 @@
             <option value="1">video-tagging using square markers</option>
             <option value="2">video-tagging using point markers</option>
             <option value="3">video-tagging using rectangle markers</option>
+            <option value="4">image-tagging using rectangle markers</option>
       </select>
       <br>
     </div>
@@ -62,10 +63,22 @@
     job3.id = 3;
     job3.video = "mov2.mp4";
 
+    var job4 = {};
+    job4.Config = {"regiontype":"Rectangle",  "multiregions":"1"};
+    job4.Config.tags = ["shoe","stone","hat","shirt","white","brown"];
+    job4.DurationSeconds = 21.8;
+    job4.FramesPerSecond = 25;
+    job4.Description = "Image Job";
+    job4.id = 4;
+    job4.imagelist = ['image1.png','image2.png'];
+    job1.Height = 480;
+    job1.Width = 640;
+
 
     jobList.push(job1)
     jobList.push(job2)
     jobList.push(job3)
+    jobList.push(job4)
 
     function jobSelectionChanged(){
 
@@ -97,7 +110,14 @@
         videotagging.regionsize = jobConfig.regionsize;
         videotagging.inputtagsarray = jobConfig.tags;
         
-        videotagging.src = job.video;//load
+        if(job.video){
+            videotagging.src = job.video;//load
+        }
+
+        if(job.imagelist){
+            videotagging.imagelist = job.imagelist;
+            videotagging.src = null;//load
+        }
     }
     
     document.getElementById('video-tagging').addEventListener('onregionchanged', function (e) {
